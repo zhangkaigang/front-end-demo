@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- https://github.com/jquery-validation/jquery-validation -->
+    <meta charset="UTF-8">
+    <title>jquery-validation</title>
+    <link rel="stylesheet" type="text/css" href="../js/validate/jquery.validate.css" />
+    <script type="text/javascript" src="../js/common/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="../js/validate/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="../js/validate/jquery.validate.extend.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#regForm").validate({
+                ignore:".ignore",
+                errorPlacement:function(error,element) {
+                    error.appendTo(element.parent());
+                },
+                rules: {
+                    username:{
+                        required: true,
+                        minlength: 2
+                    },
+                    password:{
+                        required: true,
+                        minlength: 6,
+                        maxlength: 16
+                    },
+                    repassword:{
+                        required: true,
+                        equalTo: "#password"
+                    },
+                    amt: {
+                        required: true,
+                        amtCheck: true
+                    }
+                },
+                messages:{
+                    username:{
+                        required: "用户名不能为空",
+                        minlength: "用户名的最小长度为2"
+                    },
+                    password:{
+                        required: "密码不能为空",
+                        minlength: "密码长度不能少于6个字符",
+                        maxlength: "密码长度不能超过16个字符"
+                    },
+                    repassword:{
+                        required: "确认密码不能为空",
+                        equalTo: "确认密码和密码不一致"
+                    },
+                    amt: {
+                        required: "金额不能为空"
+                    }
+                },
+                submitHandler:function(form) {
+                    console.log('验证通过后执行', form)
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<form action="#" method="post" id="regForm">
+    <fieldset>
+        <legend>jquery-validate表单校验验证</legend>
+        <div class="item">
+            <label for="nickname" class="item-label">昵称:</label>
+            <input type="text" id="nickname" name="nickname" class="item-text" placeholder="设置昵称"
+                   autocomplete="off" tip="请输入昵称" required minlength="2">
+        </div>
+        <div class="item">
+            <label class="item-label">性别:</label>
+            <input class="item-radio" type="radio" id="gender_male" value="男" name="gender" required />男
+            <input class="item-radio" type="radio" id="gender_female" value="女" name="gender"/>女
+        </div>
+        <div class="item">
+            <label class="item-label">兴趣:</label>
+            <input type="checkbox" class="item-checkbox" id="spam_email" value="email" name="spam[]" required minlength="2"/>篮球
+            <input type="checkbox" class="item-checkbox" id="spam_phone" value="phone" name="spam[]" />看书
+            <input type="checkbox" class="item-checkbox" id="spam_mail" value="mail" name="spam[]" />编程
+        </div>
+        <div class="item">
+            <label for="jungle" class="item-label">颜色:</label>
+            <select id="jungle" name="jungle" class="item-select" required>
+                <option value="">请选择</option>
+                <option value="1">红色</option>
+                <option value="2">蓝色</option>
+                <option value="3">黄色</option>
+            </select>
+        </div>
+        <div class="item">
+            <label for="email" class="item-label">邮箱:</label>
+            <input type="text" id="email" name="email" class="item-text" placeholder="设置Email"
+                   autocomplete="off" tip="请输入Email" email="true">
+        </div>
+        <div class="item">
+            <label for="url" class="item-label">url:</label>
+            <input type="text" id="url" name="url" class="item-text ignore" placeholder="设置url"
+                   autocomplete="off" tip="请输入url" url="true">
+        </div>
+        <div class="item">
+            <label for="username" class="item-label">用户名:</label>
+            <input type="text" id="username" name="username" class="item-text" placeholder="设置用户名"
+                   autocomplete="off" tip="请输入用户名">
+        </div>
+        <div class="item">
+            <label for="password" class="item-label">密码:</label>
+            <input type="password" id="password" name="password" class="item-text" placeholder="设置密码"
+                   tip="长度为6-16个字符">
+        </div>
+        <div class="item">
+            <label for="password" class="item-label">确认密码:</label>
+            <input type="password" name="repassword" class="item-text" placeholder="设置确认密码">
+        </div>
+        <div class="item">
+            <label for="amt" class="item-label">金额:</label>
+            <input type="text" id="amt" name="amt" class="item-text" placeholder="交易金额"
+                   tip="交易金额必须大于0，且最多有两位小数">
+        </div>
+        <div class="item">
+            <input type="submit" value="提交" class="item-submit">
+        </div>
+    </fieldset>
+</form>
+</body>
+</html>
