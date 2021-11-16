@@ -4,12 +4,12 @@
     <!-- https://github.com/jquery-validation/jquery-validation -->
     <meta charset="UTF-8">
     <title>jquery-validation</title>
-    <link rel="stylesheet" type="text/css" href="../js/validate/jquery.validate.css" />
-    <script type="text/javascript" src="../js/common/jquery-1.11.2.min.js"></script>
-    <script type="text/javascript" src="../js/validate/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="../js/validate/jquery.validate.extend.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../js/validate/jquery.validate.css" />
+    <script type="text/javascript" src="../../js/common/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="../../js/validate/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="../../js/validate/jquery.validate.extend.js"></script>
     <script>
-        $(document).ready(function(){
+        $(function() {
             $("#regForm").validate({
                 ignore:".ignore",
                 errorPlacement:function(error,element) {
@@ -63,11 +63,11 @@
 <form action="#" method="post" id="regForm">
     <fieldset>
         <legend>jquery-validate表单校验验证</legend>
-        <div class="item">
-            <label for="nickname" class="item-label">昵称:</label>
-            <input type="text" id="nickname" name="nickname" class="item-text" placeholder="设置昵称"
-                   autocomplete="off" tip="请输入昵称" required minlength="2">
-        </div>
+    <div class="item">
+        <label for="nickname" class="item-label">昵称:</label>
+        <input type="text" id="nickname" name="nickname" class="item-text" placeholder="设置昵称"
+               autocomplete="off" tip="请输入昵称" required minlength="2">
+    </div>
         <div class="item">
             <label class="item-label">性别:</label>
             <input class="item-radio" type="radio" id="gender_male" value="男" name="gender" required />男

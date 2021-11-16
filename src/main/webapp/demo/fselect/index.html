@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jquery-fselect</title>
+
+    <link rel="stylesheet" type="text/css" href="../../js/fselect/fselect.css" />
+    <script type="text/javascript" src="../../js/common/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="../../js/fselect/fselect.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $('#demo').fSelect({numDisplayed: 2});
+    });
+    function getSelect() {
+        //获取选中的值
+        console.log($("select[name='demo']").val())
+    }
+
+    function showSelected() {
+        //初始化值，假设选中了'cp,c,js'
+        var arr = 'Java,Vue';
+        if(arr !=""){
+            arr = arr.split(',');
+            //第一步，先给select标签赋值
+            $("select[name='demo']").val(arr);
+            //第二步，给fs-optgroup下对应的option添加样式selected
+            $(".fs-option").each(function () {
+                if(arr.indexOf($(this)['context']['dataset']['value']) != -1){
+                    $(this).addClass("selected");
+                }
+            });
+            //第三步，重新加载下拉框，使得添加了selected样式的option处于被勾选状态
+            $("select[name='demo']").fSelect('reloadDropdownLabel');
+        };
+    }
+</script>
+</head>
+<body>
+
+<select id="demo" name="demo" multiple="multiple">
+    <option value="Java">Java</option>
+    <option value="JavaScript">JavaScript</option>
+    <option value="C">C</option>
+    <option value="Vue">Vue</option>
+</select>
+<div>
+    <input type="button" value="获取选中值" onclick="getSelect()"/>
+    <input type="button" value="初始化回显" onclick="showSelected()"/>
+</div>
+
+</body>
+</html>
