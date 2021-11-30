@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>html2canvas</title>
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <script type="text/javascript" src="../../js/html2canvas/html2canvas.min.js"></script>
+    <script type="text/javascript" src="../../js/html2canvas/jspdf.debug.js"></script>
+
+    <script type="text/javascript">
+        function exportImg() {
+            var targetDom = document.getElementById('reportView');
+            var width = targetDom.offsetWidth; //dom宽
+            var height = targetDom.offsetHeight; //dom高
+            // 解决图片模糊
+            var scale = 1;//放大倍数
+            var canvas = document.createElement('canvas');
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            var context = canvas.getContext('2d');
+            context.scale(scale, scale);
+            //设置context位置，值为相对于视窗的偏移量负值，让图片复位(解决偏移的重点)
+            var rect = targetDom.getBoundingClientRect();//获取元素相对于视察的偏移量
+            context.translate(-rect.left, -rect.top);
+
+            var opts = {
+                canvas: canvas,
+                useCORS: true, // 【重要】开启跨域配置
+                scrollY: 0, // 纵向偏移量 写死0 可以避免滚动造成偶尔偏移的现象
+            };
+
+            html2canvas(targetDom, opts).then(function(canvas) {
+                var exportImgEle = document.querySelector('#exportImg');
+                var exportImgLinkEle = document.querySelector('#exportImgLink');
+                exportImgEle.src = canvas.toDataURL('image/png');
+                exportImgLinkEle.href = canvas.toDataURL('image/png');
+                exportImgLinkEle.click();
+            });
+        }
+
+        function exportReport() {
+            var targetDom = document.getElementById('reportView');
+            var width = targetDom.offsetWidth; //dom宽
+            var height = targetDom.offsetHeight; //dom高
+            // 解决图片模糊
+            var scale = 2.5;//放大倍数
+            var canvas = document.createElement('canvas');
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            var context = canvas.getContext('2d');
+            context.scale(scale, scale);
+            //设置context位置，值为相对于视窗的偏移量负值，让图片复位(解决偏移的重点)
+            var rect = targetDom.getBoundingClientRect();//获取元素相对于视察的偏移量
+            context.translate(-(rect.left), -rect.top);
+
+            var opts = {
+                canvas: canvas,
+                useCORS: true, // 【重要】开启跨域配置
+                scrollY: 0, // 纵向偏移量 写死0 可以避免滚动造成偶尔偏移的现象
+            };
+
+            html2canvas(targetDom, opts).then(function(canvas) {
+                /**jspdf将html转为pdf，整体思路：
+                 * 1. 获取DOM
+                 * 2. 将DOM转换为canvas
+                 * 3. 获取canvas的宽度、高度（稍微大一点）
+                 * 4. 将pdf的宽高设置为canvas的宽高
+                 * 5. 将canvas转为图片
+                 * 6. 实例化jspdf，将内容图片放在pdf中（因为内容宽高和pdf宽高一样，就只需要一页，也防止内容截断问题）841.89
+                 */
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+
+                //一页pdf显示html页面生成的canvas高度;
+                var pageHeight = (contentWidth / 595.28) * 841.89;
+                //未生成pdf的html页面高度
+                var htmlHeight = contentHeight;
+                //pdf页面偏移
+                var position = 0;
+                //a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
+                var imgWidth = 595.28;
+                var imgHeight = (595.28 / contentWidth) * contentHeight;
+
+                var pageData = canvas.toDataURL("image/jpeg", 1.0);
+                var pdf = new jspdf('p', 'pt', 'a4');
+                //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
+                //当内容未超过pdf一页显示的范围，无需分页
+                if (htmlHeight < pageHeight) {
+                    pdf.addImage(pageData, "JPEG", 0, 0, imgWidth, imgHeight);
+                } else {
+                    while (htmlHeight > 0) {
+                        pdf.addImage(pageData, "JPEG", 0, position, imgWidth, imgHeight);
+                        htmlHeight -= pageHeight;
+                        position -= 841.89;
+                        //避免添加空白页
+                        if (htmlHeight > 0) {
+                            pdf.addPage();
+                        }
+                    }
+                }
+                // 将内容图片添加到pdf中
+                pdf.save("测试报告.pdf");
+            });
+        }
+    </script>
+</head>
+<body style="background: #f1f3fa;overflow-y: auto;">
+<div style="padding:10px;">
+    <div class="report-btn-group">
+        <input type="button" value="导出图片" onclick="exportImg()"/>
+        <input type="button" value="导出PDF" onclick="exportReport()"/>
+        <!-- 隐藏该链接 -->
+        <a id="exportImgLink" class="export-img-link" style="display: none" download="测试报告.png">
+            <img id="exportImg" class="export-img" alt="测试报告" />
+        </a>
+    </div>
+    <div style="clear: both"></div>
+    <div class="report-body">
+        <div class="report-view" id="reportView">
+            <div class="report-content">
+                <div class="report-title">测试报告</div>
+                <div class="report-title-extend">
+                    <div class="display-table-cell">测试1：<span id="caseCodeView">xxx</span></div>
+                    <div class="display-table-cell" style="padding-left: 100px">测试2：<span id="causeView">xxxx</span></div>
+                </div>
+                <hr>
+                <div>
+                    <div class="report-content-header">登录表单</div>
+                    <div class="report-content-item">
+                        <div class="report-content-item-line">
+                            <div class="report-content-item-line-left">
+                                <div class="report-content-item-label">姓名：</div>
+                                <div class="report-content-item-text">张三</div>
+                            </div>
+                            <div class="display-table">
+                                <div class="report-content-item-label">年龄：</div>
+                                <div class="report-content-item-text">18</div>
+                            </div>
+                        </div>
+                        <div class="report-content-item-line">
+                            <div class="report-content-item-line-left">
+                                <div class="report-content-item-label">职业：</div>
+                                <div class="report-content-item-text">学生</div>
+                            </div>
+                            <div class="display-table">
+                                <div class="report-content-item-label">学历：</div>
+                                <div class="report-content-item-text">本科</div>
+                            </div>
+                        </div>
+                        <div class="report-content-item-line">
+                            <div class="report-content-item-line-left">
+                                <div class="report-content-item-label">姓名：</div>
+                                <div class="report-content-item-text">张三</div>
+                            </div>
+                            <div class="display-table">
+                                <div class="report-content-item-label">年龄：</div>
+                                <div class="report-content-item-text">18</div>
+                            </div>
+                        </div>
+                        <div class="report-content-item-line">
+                            <div class="report-content-item-line-left">
+                                <div class="report-content-item-label">职业：</div>
+                                <div class="report-content-item-text">学生</div>
+                            </div>
+                            <div class="display-table">
+                                <div class="report-content-item-label">学历：</div>
+                                <div class="report-content-item-text">本科</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>
