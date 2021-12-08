@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>复选框操作</title>
+    <style type="text/css">
+        .checkbox{
+            width: 30px;
+            height: 30px;
+            /*position: absolute;*/
+            left: -1px;
+            top: -1px;
+            display: none;
+        }
+        .checkbox{
+            display: block;
+        }
+        .checkbox1{
+            background: url(ico.png) no-repeat 0px -270px;
+        }
+        .checked1{
+            background-position: 0px -320px;
+        }
+        .checkbox2{
+            background: url(ico.png) no-repeat 0px -370px;
+        }
+        .checked2{
+            background-position: 0px -420px;
+        }
+        .checkbox3{
+            font-size: 14px;
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #d9d9d9;
+            position: absolute;
+            border-radius: 5px;
+        }
+        .advice{
+            font-size: 14px;
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border: 3px solid #d9d9d9;
+            position: absolute;
+            border-radius: 5px;
+        }
+        .checkbox3:checked + label {
+            background-color: #00789A;
+            color: #fff;
+        }
+        .checkbox3:checked + label:after {
+            content: '\2714'; /*勾选符号*/
+            text-align: center;
+            font-size: 16px;
+            position: absolute;
+            top: -3px;
+            right: 1px
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <div>美化复选框1</div>
+        <div>
+            <lable class='checkbox checkbox1'></lable>
+            <lable class='checkbox checkbox1 checked1'></lable>
+        </div>
+        <div>美化复选框2</div>
+        <div>
+            <lable class='checkbox checkbox2'></lable>
+            <lable class='checkbox checkbox2 checked2'></lable>
+        </div>
+        <div>美化复选框3</div>
+        <div>
+<!--            <input class="checkbox3" type="checkbox" id="checkBox3-1"/>-->
+<!--            <label for="checkBox3-1" class="advice"></label>-->
+
+            <input class="checkbox3" type="checkbox" checked id="checkBox3-2"/>
+            <label for="checkBox3-2" class="advice" style="border:3px solid #00789A"></label>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
