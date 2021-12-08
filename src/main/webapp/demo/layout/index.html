@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多行多列布局</title>
+    <style type="text/css">
+        .box1 {
+            width: 500px;
+            background: #EEEEEE;
+        }
+        .box1 ul {
+            clear: both;
+            overflow: hidden;
+        }
+        .box1 ul li {
+            width: 48%;
+            height: 100px;
+            margin-bottom: 10px;
+            background: skyblue;
+            float: left;
+        }
+        .box1 ul li:nth-child(even) {
+            margin-left: 4%;
+        }
+
+        .box2 {
+            background: #EEEEEE;
+            margin-top: 20px;
+            width: 500px;
+        }
+        .box2 ul {
+            overflow: hidden;
+            margin-left: -10px;
+            background: #EEEEEE;
+        }
+        .box2 ul li {
+            width: 33.3333%;
+            height: 50px;
+            float: left;
+            padding-left: 10px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .box2 ul li .com {
+            height: inherit;
+            background: skyblue;
+        }
+
+        .box3 {
+            background: #EEEEEE;
+            color: white;
+            margin-top: 20px;
+        }
+        .box3 .header {
+            width: 100%;
+            background: #008000;
+            height: 50px;
+        }
+        .box3 .container {
+            clear: both;
+            overflow: hidden;
+            padding: 0 130px 0 100px;
+        }
+        .box3 .container .left {
+            width: 100px;
+            float: left;
+            background: #008B8B;
+            height: 100px;
+            margin-left: -100%;
+            position: relative;
+            left: -100px;
+        }
+        .box3 .container .center {
+            background: #00BFFF;
+            height: 100px;
+            float: left;
+            width: 100%;
+        }
+        .box3 .container .right {
+            width: 130px;
+            float: left;
+            background: #FA8072;
+            height: 100px;
+            margin-left: -130px;
+            position: relative;
+            right: -130px;
+        }
+        .box3 .footer {
+            width: 100%;
+            background: #222222;
+            height: 30px;
+        }
+
+        .box4 {
+            background: #EEEEEE;
+            color: white;
+            margin-top: 20px;
+        }
+        .box4 .header {
+            width: 100%;
+            background: #008000;
+            height: 50px;
+        }
+        .box4 .container {
+            clear: both;
+            overflow: hidden;
+            padding: 0 130px 0 100px;
+            position: relative;
+        }
+        .box4 .container .left {
+            width: 100px;
+            background: #008B8B;
+            height: 100px;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+        .box4 .container .center {
+            background: #00BFFF;
+            height: 100px;
+            width: 100%;
+        }
+        .box4 .container .right {
+            width: 130px;
+            background: #FA8072;
+            height: 100px;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+        .box4 .footer {
+            width: 100%;
+            background: #222222;
+            height: 30px;
+        }
+
+        .box5 {
+            background: #EEEEEE;
+            color: white;
+            margin-top: 20px;
+        }
+        .box5 .header {
+            width: 100%;
+            background: #008000;
+            height: 50px;
+        }
+        .box5 .container {
+            clear: both;
+            overflow: hidden;
+        }
+        .box5 .container .left {
+            width: 100px;
+            float: left;
+            background: #008B8B;
+            height: 100px;
+            margin-left: -100%;
+        }
+        .box5 .container .center {
+            background: #00BFFF;
+            height: 100px;
+            float: left;
+            width: 100%;
+        }
+        .box5 .container .center .center-in {
+            margin: 0 130px 0 100px;
+        }
+        .box5 .container .right {
+            width: 130px;
+            float: left;
+            background: #FA8072;
+            height: 100px;
+            margin-left: -130px;
+        }
+        .box5 .footer {
+            width: 100%;
+            background: #222222;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box1">
+        box1:实现两列多行布局
+        <ul>
+            <li>111</li>
+            <li>222</li>
+            <li>333</li>
+        </ul>
+    </div>
+
+    <div class="box2">
+        box2:多行多列
+        <ul>
+            <li>
+                <div class="com">
+                    111
+                </div>
+            </li>
+            <li>
+                <div class="com">
+                    222
+                </div>
+            </li>
+            <li>
+                <div class="com">
+                    333
+                </div>
+            </li>
+            <li>
+                <div class="com">
+                    444
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="box3">
+        <div class="header">圣杯布局(使用浮动)顶部</div>
+
+        <div class="container">
+            <div class="center">
+                中间自适应宽度,注意这个center是在left的div前面
+            </div>
+            <div class="left">
+                左部固定宽度
+            </div>
+            <div class="right">
+                右部固定宽度
+            </div>
+        </div>
+
+        <div class="footer">圣杯布局底部</div>
+    </div>
+
+    <div class="box4">
+        <div class="header">圣杯布局2(使用定位)顶部</div>
+
+        <div class="container">
+            <div class="left">
+                左部固定宽度
+            </div>
+            <div class="center">
+                中间自适应宽度，无需考虑顺序
+            </div>
+            <div class="right">
+                右部固定宽度
+            </div>
+        </div>
+
+        <div class="footer">圣杯布局2底部</div>
+    </div>
+
+    <div class="box5">
+        <div class="header">双飞翼布局顶部</div>
+
+        <div class="container">
+            <div class="center">
+                <div class="center-in">
+                    中间自适应宽度,注意这个center是在left的div前面
+                </div>
+            </div>
+            <div class="left">
+                左部固定宽度
+            </div>
+            <div class="right">
+                右部固定宽度
+            </div>
+        </div>
+
+        <div class="footer">双飞翼布局底部</div>
+    </div>
+
+
+
+</body>
