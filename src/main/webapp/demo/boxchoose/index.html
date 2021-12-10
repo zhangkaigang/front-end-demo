@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>框选效果</title>
+    <style type="text/css">
+        .content-body-card-div{
+            height: 86%;
+            position: absolute;
+            width: 1000px;
+            overflow-y: auto;
+            bottom: 8px;
+            border: 1px solid gray;
+        }
+        .content-body-card-dd{
+            display:flex;
+        }
+        .content-body-card-dd-div{
+            margin-top: 10px;
+            margin-left: 3%;
+        }
+        .content-body-card-dd div{
+            float : left;
+        }
+        .item{
+            width: 115px;
+            height: auto;
+            position: relative;
+            border: 1px solid #ffffff;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .item-icon-div{
+            margin-top: 12px;
+            margin-left: 15px;
+        }
+        .item-name-div{
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100px;
+            margin-bottom: 10px;
+        }
+        .item-name-span{
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .checkbox{
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            left: -1px;
+            top: -1px;
+            display: none;
+            background: url(ico.png) no-repeat 0px -370px;
+        }
+        .file-checked .item{
+            background: #f3f9fe;
+            border: 1px solid #c3d8f0;
+        }
+        .file-checked  .checkbox{
+            display: block;
+        }
+        .file-checked  .checked{
+            background-position: 0px -420px;
+        }
+        /* 框选样式  */
+        .selectTab{
+            width: 0px;
+            height: 0px;
+            background: #e9f3fd;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            border: 1px dashed #000;
+            z-index: 100;
+            opacity: .5;
+        }
+    </style>
+    <script type="text/javascript" src="../../js/common/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript">
+        var checkData = [];
+        // 卡片div框选事件
+        var newDiv = null;
+        var disX = 0, disY = 0;
+        // 框选移动
+        function moveFn(ev) {
+            // 在移动的过程中的位置 - 鼠标点击的位置 > 5的时候，再显示框
+            if(Math.abs(ev.clientX - disX) > 5 || Math.abs(ev.clientY - disY) > 5){
+                if(!newDiv){
+                    newDiv = document.createElement("div");
+                    newDiv.className = "selectTab";
+                    document.body.appendChild(newDiv);
+                }
+                newDiv.style.width = 0;
+                newDiv.style.height = 0;
+                newDiv.style.display = "block";
+                newDiv.style.left = disX + "px";
+                newDiv.style.top = disY + "px";
+
+                var w = ev.clientX - disX;
+                var h = ev.clientY - disY;
+
+                newDiv.style.width = Math.abs(w) + "px";
+                newDiv.style.height = Math.abs(h) + "px";
+                // 鼠标动的过程中的clientX和爱鼠标摁下的disX，哪一个值小就把这个值赋给睡
+                newDiv.style.left = Math.min(ev.clientX, disX) + "px";
+                newDiv.style.top = Math.min(ev.clientY, disY) + "px";
+
+                // 做一个碰撞检测
+                // 拖拽的newdiv和哪些文件碰上，如果碰上的文件添加样式，没有碰上的取消样式
+                $('.content-body-card-dd-div').each(function() {
+                    var item = $(this)[0];
+                    if(collisionRect(newDiv, item)) {
+                        // 碰撞上了
+                        $(item).addClass("file-checked");
+                        var labelCheck = $(item).children().children('.checkbox');
+                        $(labelCheck).addClass("checked");
+                        var obj = getCardCheck(labelCheck);
+                        if (checkData.length == 0) {
+                            checkData.push(obj);
+                        }else{
+                            var isExist = JSON.stringify(checkData).indexOf(JSON.stringify(obj));
+                            if(isExist == -1) {
+                                checkData.push(obj);
+                            }
+                        }
+                    } else {
+                        $(item).removeClass("file-checked");
+                        var labelCheck = $(item).children().children('.checkbox');
+                        $(labelCheck).removeClass("checked");
+
+                        var removeCheckId = $(labelCheck).attr('data-id');
+                        for(var i = 0; i < checkData.length; i++) {
+                            if (removeCheckId == checkData[i].id) {
+                                checkData.splice($.inArray(checkData[i], checkData), 1);
+                            }
+                        }
+                    }
+                });
+
+            }
+        }
+        // 框选时鼠标放下点击
+        function upFn(){
+            removeEvent(document, "mousemove", moveFn);
+            removeEvent(document, "mouseup", upFn);
+            if(newDiv){
+                newDiv.style.display = "none";
+            }
+        }
+        function addEvent(ele,eventName,eventFn){
+            ele.addEventListener(eventName,eventFn,false);
+        }
+        function removeEvent(ele,eventName,eventFn){
+            ele.removeEventListener(eventName,eventFn,false);
+        }
+        function getEleRect(obj){
+            return obj.getBoundingClientRect();
+        }
+        function collisionRect(obj1, obj2){
+            var obj1Rect = getEleRect(obj1);
+            var obj2Rect = getEleRect(obj2);
+            var obj1W = obj1Rect.width;
+            var obj1H = obj1Rect.height;
+            var obj1L = obj1Rect.left;
+            var obj1T = obj1Rect.top;
+
+            var obj2W = obj2Rect.width;
+            var obj2H = obj2Rect.height;
+            var obj2L = obj2Rect.left;
+            var obj2T = obj2Rect.top;
+            //碰上返回true 否则返回false
+            if( obj1W+obj1L>obj2L && obj1T+obj1H > obj2T && obj1L < obj2L+obj2W && obj1T<obj2T+obj2H ){
+                return true
+            }else{
+                return false;
+            }
+        }
+        // 卡片文件鼠标移入事件
+        function itemMouseOver(element) {
+            $(element).parent().addClass('file-checked');
+        }
+        // 卡片文件鼠标移出事件
+        function itemMouseOut(element) {
+            var labelCheck = $(element).children('.checkbox');
+            var isCheck = $(labelCheck).hasClass('checked');
+            if (!isCheck) {
+                // 没有勾选中则移出
+                $(element).parent().removeClass('file-checked');
+            }
+        }
+        // 卡片文件复选框选中
+        function checkItem(element) {
+            $(element).toggleClass("checked");
+            var isCheck = $(element).hasClass('checked');
+            var checkId = $(element).attr('data-id');
+            var obj = getCardCheck(element);
+            if(isCheck) {
+                checkData.push(obj);
+            } else{
+                for (var i = 0; i < checkData.length; i++ ) {
+                    if (checkId == checkData[i].netDiskId) {
+                        checkData.splice($.inArray(checkData[i], checkData), 1);
+                    }
+                }
+            }
+        }
+        // 卡片内容组装复选框
+        function getCardCheck(element) {
+            var checkId = $(element).attr('data-id');
+            var checkName = $(element).attr('data-name');
+            var obj = {};
+            obj.id = checkId;
+            obj.name = checkName;
+            return obj;
+        }
+
+        function initCard() {
+            // 将要渲染的数据按照一行进行分组，一个大概160，计算出一组分多少个
+            var fullWidth = $('#card').outerWidth(true);
+            var chunk = Math.round(fullWidth/160);
+            for(var k=1;k<21;k++) {
+                var obj = {};
+                obj.id = k;
+                obj.name = "测试文件夹"+k;
+                checkData.push(obj);
+            }
+            var result = [];
+            for (var i = 0; i < checkData.length; i += chunk) {
+                result.push(checkData.slice(i, i + chunk))
+            }
+            var html = '';
+            for(var m=0;m<result.length;m++) {
+                html += '<dd class="content-body-card-dd">';
+                var rowResult = result[m];
+                for(var n=0;n<rowResult.length;n++) {
+                    html += '<div class="content-body-card-dd-div">';
+                    html += '<div class="item" onmouseover="itemMouseOver(this)" onmouseout="itemMouseOut(this)" >';
+                    html += '<lable class="checkbox" onclick="checkItem(this)" data-id="'+rowResult[n].id+'"  data-name="'+rowResult[n].name+'"></lable>';
+                    html += '<div class="item-icon-div" >';
+                    html += '<img src="folder.png" style="width:50px;height:50px"/>';
+                    html += '</div>';
+                    html += '<div class="item-name-div">';
+                    html += '<span class="item-name-span" title="'+rowResult[n].name+'">'+rowResult[n].name+'</span>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '</div>';
+                }
+                html += '</dd>';
+            }
+            $('#card').html('');
+            $('#card').append(html);
+
+            // 卡片div框选事件
+            var cardDocument = document.getElementById("card");
+            addEvent(cardDocument, "mousedown", function(ev){
+                disX = ev.clientX;
+                disY = ev.clientY;
+                addEvent(document, "mousemove", moveFn);
+                addEvent(document, "mouseup", upFn);
+                // 去掉默认行为,不框选文字
+                ev.preventDefault();
+            });
+        }
+
+        function getSelected() {
+            alert("打开F12查看")
+            console.log(checkData)
+        }
+    </script>
+</head>
+<body onload="initCard()">
+<div class="content-body-card-div" id="card">
+
+</div>
+<div>
+    <input type="button" onclick="getSelected()" value="获取选中值"/>
+</div>
+</body>
+</html>
