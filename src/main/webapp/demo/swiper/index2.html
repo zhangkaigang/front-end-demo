@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>swiper.min.js</title>
+    <link rel="stylesheet" type="text/css" href="../../js/swiper/swiper.min.css" />
+</head>
+<body>
+<div style="width:400px;height:400px;margin:0 auto">
+    <!-- Swiper -->
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <img src="swiper1.jpg" style="width:400px;height:400px"/>
+            </div>
+            <div class="swiper-slide">
+                <img src="swiper2.jpg" style="width:400px;height:400px"/>
+            </div>
+        </div>
+        <!-- 如果需要分页器 -->
+        <div class="swiper-pagination swiper-pagination-white"></div>
+        <!-- 如果需要导航按钮 箭头颜色示范：swiper-button-white-->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+
+        <!-- 如果需要滚动条 -->
+        <div class="swiper-scrollbar"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../../js/swiper/swiper.min.js"></script>
+<!-- Initialize Swiper -->
+<script>
+    new Swiper ('.swiper-container', {
+        // 如果需要分页器
+        pagination: '.swiper-pagination',
+        paginationClickable: true,
+        // 如果需要前进后退按钮
+        nextButton: '.swiper-button-next',
+        prevButton: '.swiper-button-prev',
+        // 如果需要滚动条
+        scrollbar: '.swiper-scrollbar',
+        grabCursor: true
+    })
+</script>
+</body>
+</html>

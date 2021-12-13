@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- https://3.swiper.com.cn/ -->
+    <meta charset="UTF-8">
+    <title>swiper.jquery.min.js</title>
+    <link rel="stylesheet" type="text/css" href="../../js/swiper/swiper.min.css" />
+    <script type="text/javascript" src="../../js/common/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="../../js/swiper/swiper.jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            // 焦点图轮播
+            new Swiper ('#swiper-banner', {
+                pagination: '.swiper-pagination',
+                paginationClickable: true,
+                nextButton: '.swiper-button-next',
+                prevButton: '.swiper-button-prev',
+                autoplay: 3800,
+                loop : true,
+                speed:1000,
+                autoplayDisableOnInteraction: false,
+                grabCursor: true
+            });
+        })
+    </script>
+</head>
+<body>
+<div style="width:400px;height:400px;margin:0 auto">
+    <!-- Swiper -->
+    <div class="swiper-container" id="swiper-banner">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <img src="swiper1.jpg" style="width:400px;height:400px"/>
+            </div>
+            <div class="swiper-slide">
+                <img src="swiper2.jpg" style="width:400px;height:400px"/>
+            </div>
+        </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+        <!-- Add Navigation -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    </div>
+</div>
+
+</body>
+</html>
