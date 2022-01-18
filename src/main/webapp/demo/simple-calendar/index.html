@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>简易日历</title>
+<!--    https://www.jq22.com/jquery-info9256-->
+    <link rel="stylesheet" type="text/css" href="../../js/simple-calendar/simple-calendar.css" />
+    <script type="text/javascript" src="../../js/common/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="../../js/simple-calendar/simple-calendar.js"></script>
+</head>
+<body>
+<div id="calendarContainer" style="width:500px;height:320px;margin:0 auto">
+    <div id="myCalendar" style="width:500px;height:320px;"></div>
+</div>
+<div id="oneScheduleDayList" class="pt-10" style="display: none;margin:0 auto">
+
+</div>
+<div style="text-align: center;padding-top:10px;padding-bottom:10px;"><img onclick="addSchedule()" title="添加日程" src="add-red.png" style="width:24px;height:24px;cursor:pointer"/></div>
+
+<div style="text-align:center; color:red;margin-top:20px">
+    ps：需要做标记的返回的时间格式则不需要0 %Y-%M-%e 示例2021-1-1，不能写成2021-01-01，如果要改的话请修改simple-calendar.js，其他农历等可以参考原本的插件修改
+</div>
+
+<script type="text/javascript">
+    var myCalendarOptions = {
+        showLunarCalendar: false, //阴历
+        showHoliday: false, //休假
+        showFestival: false, //节日
+        showLunarFestival: false, //农历节日
+        showSolarTerm: false, //节气
+        showMark: true //标记
+    };
+    var myCalendar = new SimpleCalendar('#myCalendar', myCalendarOptions);
+    var scheduleDayList = ['2022-1-8', '2022-1-23'];
+    for(var i=0;i<scheduleDayList.length;i++) {
+        myCalendar.addMark(scheduleDayList[i], '点击查看日程');
+    }
+
+
+
+    // 获取选中月的有日程的具体日期然后做标记
+    function getScheduleDayList() {
+        var year = $(".sc-select-year").val();
+        var month = $(".sc-select-month").val();
+        var dateStr = year + "-" + month;
+        var date = new Date(dateStr);
+        var beginTime = commonFuns.getMonthFirst(date);
+        var endTime = commonFuns.getMonthLast(date);
+        $.ajax({
+            url:'xxxx',
+            data :{
+                beginTime:beginTime,
+                endTime: endTime
+            },
+            dataType:'json',
+            success:function(data){
+                if(data && data.success) {
+                    myCalendar.clearMark();
+                    for(var j=0;j<data.list.length;j++) {
+                        myCalendar.addMark(data.list[j], '点击查看日程');
+                        // 刷新
+                        myCalendar.update(month, year);
+                    }
+                }
+            }
+        })
+        $("#oneScheduleDayList").hide();
+    }
+
+    $(".sc-yleft, .sc-yright, .sc-mleft, .sc-mright, .sc-return-today").click(function() {
+        getScheduleDayList();
+    });
+
+    $(".sc-select-month, .sc-select-year").change(function(){
+        getScheduleDayList();
+    });
+
+    // 得到具体日期的日程数据
+    function getOneScheduleDayList(date) {
+        $.ajax({
+            url:'xxxx',
+            data :{
+                beginTime:date
+            },
+            dataType:'json',
+            success:function(data){
+                if(data && data.success) {
+                    var html = '';
+                    var moreFlag = false;
+                    if (data.list && data.list.length > 3) {
+                        data.list = data.list.slice(0, 3);
+                        moreFlag = true;
+                    }
+                    for(var i=0;i<data.list.length;i++) {
+                        var item = data.list[i];
+                        html += '<div class="schedule-list-item" title="点击查看详情"  onclick="">';
+                        html += '<div class="ml-10">'+commonFuns.formatDate(item.startTime, "MM月dd日 HH:mm")+'</div>';
+                        html += '<div class="ml-10 schedule-list-item-right">'+item.text+'</div>';
+                        html += '</div>';
+                    }
+                    if (moreFlag) {
+                        html += '<div onclick="" style="cursor: pointer;margin-left: 12px;color: #409eff">查看更多</div>';
+                    }
+                    $("#oneScheduleDayList").html(html);
+                }
+            }
+        })
+    }
+
+    // 具体日期点击事件
+    var selectDate = "";
+    $(".sc-item").click(function() {
+        var year = $(".sc-select-year").val();
+        var month = $(".sc-select-month").val();
+        if ($(this).hasClass("sc-othermenth")) {
+            if ($(this).children(".day").html() > 20) {
+                month = parseInt(month) - 1;
+                if(month == 0) {
+                    // 如果上个月是0则表示是上一年的12月
+                    month = 12;
+                    year = parseInt(year) - 1;
+                }
+            }
+            if ($(this).children(".day").html() < 10) {
+                month = parseInt(month) + 1;
+            }
+        }
+        var day = $(this).children(".day").html(); //获取当前选择天数。
+        var date = year + "-" + month + "-" + day;
+        selectDate = date;
+        alert("选中日期："+selectDate)
+        getOneScheduleDayList(date);
+    });
+
+    function addSchedule() {
+        alert("添加日程，选中日期为："+selectDate)
+    }
+
+    // 定时任务刷新标记
+    function loadData() {
+        var calendarYear = $(".sc-select-year").val();
+        var calendarMonth = $(".sc-select-month").val();
+        var data = {};
+        data.scheduleDayList = [];
+        if(data.scheduleDayList) {
+            var daysElement = myCalendar.arrayfrom(document.querySelectorAll('.sc-mark'));
+            var flag = false;
+            daysElement.forEach(function (v, i) {
+                v.classList.remove('sc-mark');
+                if(i==daysElement.length-1) {
+                    flag = true;
+                }
+            });
+            myCalendar.clearMark();
+            for(var m=0;m<data.scheduleDayList.length;m++){
+                var schedule = data.scheduleDayList[m];
+                myCalendar.addMark(schedule, '点击查看日程');
+                // 刷新
+                myCalendar.update(calendarMonth, calendarYear);
+            }
+
+
+        }
+    }
+
+    var commonFuns = {
+        getMonthFirst: function(date) {
+            date.setDate(1);
+            var month = parseInt(date.getMonth() + 1);
+            var day = date.getDate();
+            if (month < 10) {
+                month = '0' + month
+            }
+            if (day < 10) {
+                day = '0' + day
+            }
+            return date.getFullYear() + '-' + month + '-' + day;
+        },
+        getMonthLast: function(date) {
+            var currentMonth = date.getMonth();
+            var nextMonth = ++currentMonth;
+            var nextMonthFirstDay = new Date(date.getFullYear(), nextMonth, 1);
+            var oneDay = 1000 * 60 * 60 * 24;
+            var lastTime = new Date(nextMonthFirstDay - oneDay);
+            var month = parseInt(lastTime.getMonth() + 1);
+            var day = lastTime.getDate();
+            if (month < 10) {
+                month = '0' + month
+            }
+            if (day < 10) {
+                day = '0' + day
+            }
+            return date.getFullYear() + '-' + month + '-' + day;
+        },
+        formatDate: function(date,fmt){
+            var WEEKS =["日","一","二","三","四","五","六"];
+            if(date==null){
+                return "";
+            }
+            fmt =fmt||"yyyy-MM-dd";
+            if(!date.getFullYear){
+                date = new Date(date);
+            }
+            var o = {
+                "y" : date.getFullYear(),
+                "M" : date.getMonth()+1, //月份
+                "d" : date.getDate(), //日
+                "h" : date.getHours()%12||12, //小时
+                "H" : date.getHours(), //小时
+                "m" : date.getMinutes(), //分
+                "s" : date.getSeconds(), //秒
+                "S" : date.getMilliseconds(),//毫秒
+                "E": WEEKS[date.getDay()]
+            };
+            var ret = fmt.replace(/([yMdHhmsSE])\1*/g,function(p,t){
+                if(t=="y"){
+                    var v = o[t] + "";
+                    return p.length==2?v.substr(v.length-2):v;
+                }
+                else if(t=="E"){
+                    return p.length>1?"星期"+ o[t]: o[t];
+                }
+                else{
+                    var v =o[t] + "";
+                    if(v.length<p.length){
+                        var pl = p.length - v.length;
+                        while(pl--)  v="0"+v;
+                    }
+                    return v;
+                }
+            });
+            return ret;
+        }
+    }
+</script>
+</body>
+</html>
