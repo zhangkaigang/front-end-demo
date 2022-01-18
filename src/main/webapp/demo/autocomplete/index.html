@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jquery.autocomplete</title>
+    <link rel="stylesheet" type="text/css" href="../../js/autocomplete/jquery.autocomplete.css" />
+    <script type="text/javascript" src="../../js/common/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="../../js/autocomplete/jquery.autocomplete.min.js"></script>
+    <script>
+        $(function(){
+            var provinceData1 = ["江西省","福建省","江苏省","广东省"];
+            $("#province1").autocomplete({
+                minChars:0,
+                lookup:provinceData1,
+                // appendTo:$("#province1").parent()  // 如果是appendTo，则该元素设置position: absolute或position: relative
+            });
+
+            var provinceData2 = [
+                {value: "江西省1", data: {"id": 1, "name":"江西省", "shortName":"赣"}},
+                {value: "福建省2", data: {"id": 2, "name":"福建省", "shortName":"闽"}}
+            ];
+            $("#province2").autocomplete({
+                minChars:0,
+                lookup:provinceData2
+            })
+
+            $('#autocomplete1').autocomplete({
+                serviceUrl: '/autocomplete/countries',
+                onSelect: function (suggestion) {
+                    alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+                }
+            });
+
+            $('#autocomplete2').autocomplete({
+                minChars:0,
+                lookup: function (query, done) {
+                    // 在本地执行 Ajax 调用或查找，完成后，
+                    // 调用回调并传递您的结果：
+                    var result = {
+                        suggestions: [
+                            { "value": "United Arab Emirates", "data": "AE" },
+                            { "value": "United Kingdom",       "data": "UK" },
+                            { "value": "United States",        "data": "US" }
+                        ]
+                    };
+
+                    done(result);
+                },
+                onSelect: function (suggestion) {
+                    alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+                }
+            });
+
+    })
+
+    </script>
+
+</head>
+<body>
+<div style="width:800px; margin: 0 auto">
+    本地查找1（无ajax），请输入省：
+    <div style="position: relative;">
+        <input type="text" name="province1" id="province1"/>
+    </div>
+
+    本地查找2（无ajax），请输入省：
+    <div>
+        <input type="text" name="province2" id="province2"/>
+    </div>
+
+    ajax1直接url查找：
+    <div>
+        <input type="text" name="autocomplete1" id="autocomplete1"/>
+    </div>
+
+    ajax2查找：
+    <div>
+        <input type="text" name="autocomplete2" id="autocomplete2"/>
+    </div>
+</div>
+</body>
+</html>
