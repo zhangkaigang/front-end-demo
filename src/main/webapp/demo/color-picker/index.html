@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>color-picker</title>
+        <script type="text/javascript" src="../../js/common/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="../../js/color-picker/colorpicker.js"></script>
+    </head>
+    <body>
+        <div>
+            <div class="theme-detail">
+                顶部背景色：<div id="topBgDiv" class="init-color-div">&nbsp;</div>
+                <input id="topBg" name="topBg" type="text" value=""/>
+            </div>
+            <div class="theme-detail">
+                菜单选中色：<div id="menuBgDiv" class="init-color-div">&nbsp;</div>
+                <input id="menuBg" name="menuBg" type="text" value=""/>
+            </div>
+            <div class="theme-detail">
+                页签选中色：<div id="tabBgDiv" class="init-color-div">&nbsp;</div>
+                <input id="tabBg" name="tabBg" type="text" value=""/>
+            </div>
+            <div class="theme-detail">
+                按钮颜色：<div id="btnBgDiv" class="init-color-div">&nbsp;</div>
+                <input id="btnBg" name="btnBg" type="text" value=""/>
+            </div>
+            <div class="theme-detail">
+                <div style="margin-left:2px;display: inline-block;">&nbsp;</div>
+                <span style="color:red">ps：点击颜色块可自定义颜色</span>
+            </div>
+            <div class="theme-detail">
+                <div style="margin-left:2px;display: inline-block;">&nbsp;</div>
+                <input style="width: 100px;height:30px;" type="button" value="恢复默认颜色" onclick="resetBg()"/>
+            </div>
+
+        </div>
+
+        <script type="text/javascript">
+            var oldTopBg = "#478cbb";
+            var oldMenuBg = "#0270c1";
+            var oldTabBg = "#42b983";
+            var oldBtnBg = "#409eff";
+
+            // 此处判断是否有自定义，如果有则赋值自定义的，没有则默认，此处暂时都默认
+            var topBg = oldTopBg;
+            var menuBg = oldMenuBg;
+            var tabBg = oldTabBg;
+            var btnBg = oldBtnBg;
+
+            function resetBg() {
+                $("#topBgDiv").css("background-color", oldTopBg);
+                $("#menuBgDiv").css("background-color", oldMenuBg);
+                $("#tabBgDiv").css("background-color", oldTabBg);
+                $("#btnBgDiv").css("background-color", oldBtnBg);
+
+                $("#topBg").val(oldTopBg);
+                $("#menuBg").val(oldMenuBg);
+                $("#tabBg").val(oldTabBg);
+                $("#btnBg").val(oldBtnBg);
+            }
+
+            Colorpicker.create({
+                el: "topBgDiv",
+                color: topBg,
+                change: function (elem, hex) {
+                    elem.style.backgroundColor = hex;
+                    $("#topBg").val(hex);
+                }
+            });
+            Colorpicker.create({
+                el: "menuBgDiv",
+                color: menuBg,
+                change: function (elem, hex) {
+                    elem.style.backgroundColor = hex;
+                    $("#menuBg").val(hex);
+                }
+            });
+            Colorpicker.create({
+                el: "tabBgDiv",
+                color: tabBg,
+                change: function (elem, hex) {
+                    elem.style.backgroundColor = hex;
+                    $("#tabBg").val(hex);
+                }
+            });
+            Colorpicker.create({
+                el: "btnBgDiv",
+                color: btnBg,
+                change: function (elem, hex) {
+                    elem.style.backgroundColor = hex;
+                    $("#btnBg").val(hex);
+                }
+            });
+
+        </script>
+
+        <script type="text/javascript">
+            // 切换主题的代码
+            /*$(function(){
+                    // 顶部、菜单选中、页签、按钮
+                    var oldTopBg = "#478cbb";
+                    var oldMenuBg = "#0270c1";
+                    var oldTabBg = "#42b983";
+                    var oldBtnBg = "#409eff";
+                    var topBg = oldTopBg;
+                    var menuBg = oldMenuBg;
+                    var tabBg = oldTabBg;
+                    var btnBg = oldBtnBg;
+                    $('<style>.top-bag{background:'+topBg+'}</style>').appendTo(document.body);
+                    $('<style>.menu-bg{background-color:'+menuBg+' !important;border-color:'+menuBg+' !important}</style>').appendTo(document.body);
+                    $('<style>.tab-bg{background-color:'+tabBg+' !important;border-color:'+tabBg+' !important}</style>').appendTo(document.body);
+                    $('<style>.btn-bg{background-color:'+btnBg+' !important;border-color:'+btnBg+' !important}</style>').appendTo(document.body);
+            })*/
+        </script>
+    </body>
+</html>
