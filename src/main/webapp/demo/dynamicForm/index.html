@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>动态表单</title>
+    <link rel="stylesheet" type="text/css" href="../../js/autocomplete/jquery.autocomplete.css" />
+    <script type="text/javascript" src="../../js/common/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="../../js/autocomplete/jquery.autocomplete.min.js"></script>
+
+    <style type="text/css">
+        .dynamicFormTable .trTemplate{
+            display: none;
+        }
+        .dynamicFormTable{
+            width: 500px;
+            margin: 3px 0;
+            border-collapse: collapse;
+            border-spacing: 0px
+        }
+        .dynamicFormTable th{
+            height: 30px;
+            text-align: center;
+            border: 1px solid #666666;
+        }
+        .dynamicFormTable td{
+            height: 30px;
+            text-align: center;
+            color: #333;
+            border: 1px solid #666666;
+        }
+        .autocomplete-suggestions{
+            text-align: left;
+        }
+    </style>
+    <script type="text/javascript">
+        function autocompleteName(el) {
+            el.find(".name").autocomplete({
+                minChars:1,
+                lookup: function (query, done) {
+                    if(query&&query.length>=1) {
+                        // 调用ajax
+                        var result = {
+                            suggestions: [
+                                { "value": "张三"},
+                                { "value": "李四"},
+                                { "value": "王五"}
+                            ]
+                        };
+                        done(result);
+                    }
+                },
+                appendTo:el.find(".name").parent()
+            });
+        }
+        function addOne(el) {
+            var dynamicFormTable = $(el).closest(".dynamicFormTable");
+            var tplTr = $(".trTemplate",dynamicFormTable);
+            var tr = tplTr.clone().removeClass("trTemplate");
+            tr.find("input,select,textarea").prop("disabled",false);
+            dynamicFormTable.append(tr);
+            autocompleteName(tr);
+        }
+
+        function clearAll(el) {
+            var dynamicFormTable = $(el).closest(".dynamicFormTable");
+            var trs = $("tr:gt(1)",dynamicFormTable);
+            trs =  trs.not(".trTemplate");
+            trs.remove();
+        }
+
+        function del(el) {
+            $(el).closest("tr").remove();
+        }
+
+        function up(el) {
+            var targetEl = $(el).closest("tr");
+            var obj = targetEl.clone();
+            var prevEl = $(el).closest("tr").prev();
+            if(prevEl.hasClass("trTemplate")) {
+                alert("已经是最顶级了!");
+            } else {
+                prevEl.before(obj);
+                autocompleteName(obj);
+                targetEl.remove();
+            }
+        }
+
+        function down(el) {
+            var targetEl = $(el).closest("tr");
+            var obj = targetEl.clone();
+            var nextEl = $(el).closest("tr").next();
+            if(nextEl.length==0) {
+                alert("已经是最底部了!");
+            } else {
+                nextEl.after(obj);
+                autocompleteName(obj);
+                targetEl.remove();
+            }
+        }
+
+        function submitForm() {
+            var from = $("#dynamicForm").serializeArray();
+            var params = $("#dynamicForm").serialize();
+            console.log(from);
+            console.log(params);
+        }
+    </script>
+</head>
+<body>
+<form id="dynamicForm">
+    <table border="0" cellspacing="1" class="dynamicFormTable" cellpadding="0">
+        <tr>
+            <td colspan="3">
+                <input type="button" value="新增" onclick="addOne(this)"/>
+                <input type="button" value="清空" onclick="clearAll(this)"/>
+            </td>
+        </tr>
+        <tr>
+            <th>姓名</th>
+            <th>手机</th>
+            <th>操作</th>
+        </tr>
+        <tr class="trTemplate">
+            <td>
+                <div style="position: relative">
+                    <input disabled type="text" class="name" name="contact_name" value="" autocomplete="off"/>
+                </div>
+            </td>
+            <td>
+                <input disabled type="text" name="contact_mobile" value=""/>
+            </td>
+            <td>
+                <input type="button" value="删除" onclick="del(this)"/>
+                <input type="button" value="上移" onclick="up(this)"/>
+                <input type="button" value="下移" onclick="down(this)"/>
+            </td>
+        </tr>
+    </table>
+    <input type="button" value="提交" onclick="submitForm()">
+</form>
+
+</body>
+</html>
