@@ -9,7 +9,12 @@
     <script type="text/javascript" src="../../js/fselect/fselect.js"></script>
     <script type="text/javascript">
         $(function() {
-            $('#demo').fSelect({numDisplayed: 2});
+            $('#demo').fSelect({
+                numDisplayed: 5,
+                callback: function(data){
+                    $("#demo").val($("#demo").fSelectedValues())
+                }
+            });
         });
         function getSelect() {
             //获取选中的值

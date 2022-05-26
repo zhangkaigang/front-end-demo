@@ -1,20 +1,23 @@
 (function($) {
-
+    var global = null;
     $.fn.fSelect = function(options) {
+        // 默认属性
+        var defaultOptions = {
+            placeholder: '---请选择---',
+            numDisplayed: 5,
+            overflowText: '已选中 {n}项',
+            searchText: '搜索',
+            showSearch: true,
+            callback: function(){
 
+            }
+        }
         if (typeof options == 'string' ) {
             var settings = options;
         }
         else {
-            var settings = $.extend({
-                placeholder: '---请选择---',
-                numDisplayed: 5,
-                overflowText: '{n} selected',
-                searchText: '搜索',
-                showSearch: true
-            }, options);
+            var settings = $.extend(true, {}, defaultOptions, options);
         }
-
 
         /**
          * Constructor
@@ -42,7 +45,12 @@
 
             reload: function() {
                 if (this.settings.showSearch) {
-                    var search = '<div class="fs-search"><input type="search" placeholder="' + this.settings.searchText + '" /></div>';
+                    var multiple = this.$select.is('[multiple]') ? ' multiple' : '';
+                    if(multiple !== ''){
+                        var search = '<div class="fs-search"><input type="search" placeholder="' + this.settings.searchText + '" /><span class="fs-selectAll">全选</span><span class="clear">清空</span></div>';
+                    }else{
+                        var search = '<div class="fs-search"><input type="search" placeholder="' + this.settings.searchText + '" />';
+                    }
                     this.$wrap.find('.fs-dropdown').prepend(search);
                 }
                 var choices = this.buildOptions(this.$select);
@@ -60,21 +68,24 @@
                 var $this = this;
 
                 var choices = '';
-                $element.children().each(function(i, el) {
-                    var $el = $(el);
+                if($element.children().length > 0){
+                    $element.children().each(function(i, el) {
+                        var $el = $(el);
 
-                    if ('optgroup' == $el.prop('nodeName').toLowerCase()) {
-                        choices += '<div class="fs-optgroup">';
-                        choices += '<div class="fs-optgroup-label">' + $el.prop('label') + '</div>';
-                        choices += $this.buildOptions($el);
-                        choices += '</div>';
-                    }
-                    else {
-                        var selected = $el.is('[selected]') ? ' selected' : '';
-                        choices += '<div class="fs-option' + selected + '" data-value="' + $el.prop('value') + '"><span class="fs-checkbox"><i></i></span><div class="fs-option-label">' + $el.html() + '</div></div>';
-                    }
-                });
-
+                        if ('optgroup' == $el.prop('nodeName').toLowerCase()) {
+                            choices += '<div class="fs-optgroup">';
+                            choices += '<div class="fs-optgroup-label">' + $el.prop('label') + '</div>';
+                            choices += $this.buildOptions($el);
+                            choices += '</div>';
+                        }
+                        else {
+                            var selected = $el.is('[selected]') ? ' selected' : '';
+                            choices += '<div class="fs-option' + selected + '" data-value="' + $el.prop('value') + '"><span class="fs-checkbox"><i></i></span><div class="fs-option-label">' + $el.html() + '</div></div>';
+                        }
+                    });
+                } else {
+                    choices =  "<p class='empty'>暂无数据</p>"
+                }
                 return choices;
             },
 
@@ -98,7 +109,8 @@
 
                 this.$wrap.find('.fs-label').html(labelText);
                 this.$select.change();
-            }
+            },
+            setwrap: function () { return "123"; },
         }
 
 
@@ -116,10 +128,14 @@
             if (typeof settings == 'string') {
                 data[settings]();
             }
+            global = data
         });
     }
 
-
+    // 是否按住shift键位
+    var isShift = false;
+    // 默认标记第一个为默认标记项（按住shift键可选中区间范围）
+    var flag = 0;
     /**
      * Events
      */
@@ -156,26 +172,89 @@
         }
     }
 
+    function isAllSelected() {
+        var selected = [];
+        var noHidden = [];
+        var allOption = $('.fs-options').find(".fs-option")
+        allOption.each(function(){
+            if(!$(this).hasClass('hidden')){
+                noHidden.push($(this))
+                if($(this).hasClass('selected')){
+                    selected.push($(this).attr('data-value'));
+                }
+            }
+        })
+        if(selected.length === noHidden.length){
+            $('.fs-selectAll').addClass('selected')
+        }else{
+            $('.fs-selectAll').removeClass('selected')
+        }
+        $('.fs-wrap').find('select').fSelect('reloadDropdownLabel');
+    }
+    $(document).on('click', '.fs-selectAll', function () {
+        var curOption = $(this).parent().next().find('.fs-option')
+        for (var index = 0; index < curOption.length; index++) {
+            var element = curOption[index];
+            if(!$(element).hasClass('hidden')){
+                $(element).addClass('selected')
+            }
+        }
+        $(this).addClass('selected');
+        $(this).closest('.fs-wrap').find('select').fSelect('reloadDropdownLabel');
+        // 执行回调
+        cb()
+    });
+    $(document).on('click', '.fs-selectAll.selected', function () {
+        var curOption = $(this).parent().next().find('.fs-option')
+        for (var index = 0; index < curOption.length; index++) {
+            var element = curOption[index];
+            if(!$(element).hasClass('hidden')){
+                $(element).removeClass('selected');
+            }
+        }
+        $(this).removeClass('selected');
+        $(this).closest('.fs-wrap').find('select').fSelect('reloadDropdownLabel');
+        // 执行回调
+        cb()
+    });
+
     $(document).on('click', '.fs-option', function() {
         var $wrap = $(this).closest('.fs-wrap');
 
         if ($wrap.hasClass('multiple')) {
+            if(isShift){
+                var min = flag <= $(this).index() ? flag : $(this).index()
+                var max = flag <= $(this).index() ? $(this).index() : flag
+                for(var i = min + 1; i < max; i++){
+                    var isHidden = $wrap.find('.fs-option').eq(i).hasClass('hidden')
+                    if(!isHidden){
+                        $wrap.find('.fs-option').eq(i).toggleClass('selected');
+                    }
+                }
+            }
+            flag = $(this).index()
             var selected = [];
 
             $(this).toggleClass('selected');
             $wrap.find('.fs-option.selected').each(function(i, el) {
                 selected.push($(el).attr('data-value'));
             });
+            // 判断是否是全部选中
+            isAllSelected()
         }
         else {
             var selected = $(this).attr('data-value');
             $wrap.find('.fs-option').removeClass('selected');
             $(this).addClass('selected');
-            $wrap.find('.fs-dropdown').hide();
+            $wrap.find('.fs-dropdown').addClass('hidden');
+            // $wrap.find('.fs-dropdown').hide();
         }
 
         $wrap.find('select').val(selected);
         $wrap.find('select').fSelect('reloadDropdownLabel');
+        // $wrap.find('select').fSelect('setwrap');
+        // 执行回调
+        cb()
     });
 
     $(document).on('keyup', '.fs-search input', function(e) {
@@ -206,14 +285,29 @@
         }
 
         setIndexes($wrap);
+        // 判断是否是全部选中
+        isAllSelected()
     });
+
+    $(document).on('click', '.clear', function(){
+        var $wrap = $(this).closest('.fs-wrap');
+        var element = $wrap.find('.fs-options').find('.fs-option.selected')
+        if(element){
+            $(element).removeClass('selected');
+        }
+        $('.fs-wrap').find('.fs-label').text('---请选择---')
+        $wrap.find('.fs-search').find("input[type='text']").val('')
+        $('.fs-wrap').find('.fs-selectAll').removeClass('selected')
+        // 执行回调
+        cb()
+    })
 
     $(document).on('click', function(e) {
         var $el = $(e.target);
         var $wrap = $el.closest('.fs-wrap');
 
         if (0 < $wrap.length) {
-            if ($el.hasClass('fs-label')) {
+            if ($el.hasClass('fs-label')|| $el.hasClass('fs-arrow')) {
                 window.fSelect.active = $wrap;
                 var is_hidden = $wrap.find('.fs-dropdown').hasClass('hidden');
                 $('.fs-dropdown').addClass('hidden');
@@ -235,6 +329,10 @@
     });
 
     $(document).on('keydown', function(e) {
+        var e = window.event || e;
+        if( e.keyCode == 16 ){
+            isShift = true;
+        }
         var $wrap = window.fSelect.active;
 
         if (null === $wrap) {
@@ -274,5 +372,68 @@
             window.fSelect.active = null;
         }
     });
+
+    $(document).on('keyup', function(e){
+        var e = window.event || e
+        if( e.keyCode == 16 ){
+            isShift = false;
+        }
+    })
+    $.fn.reload = function(){
+        var $element = $('.fs-wrap').find('select')
+        $('.fs-wrap').find('.fs-label').text('请选择')
+        var $this = this;
+        var choices = '';
+        if($element.children().length > 0){
+            $element.children().each(function (i, el) {
+                var $el = $(el);
+                if ('optgroup' == $el.prop('nodeName').toLowerCase()) {
+                    choices += '<div class="fs-optgroup">';
+                    choices += '<div class="fs-optgroup-label">' + $el.prop('label') + '</div>';
+                    choices += $this.buildOptions($el);
+                    choices += '</div>';
+                } else {
+                    var selected = $el.is('[selected]') ? ' selected' : '';
+                    choices += '<div class="fs-option' + selected + '" data-value="' + $el.prop('value') + '"><span class="fs-checkbox"><i></i></span><div class="fs-option-label">' + $el.html() + '</div></div>';
+                }
+            });
+        }else{
+            choices =  "<p class='empty'>暂无数据</p>"
+        }
+        $element.empty()
+        $('.fs-wrap').find('.fs-options').html(choices);
+        $('.fs-wrap').find('.fs-selectAll').removeClass('selected')
+        $('.fs-wrap').find('.fs-search').find("input[type='text']").val('')
+        // 执行回调
+        cb()
+    }
+    function cb() {
+        var result = [];
+        var a = global.$wrap.find(".fs-option")
+        for (var i = 0; i < a.length; i++) {
+            if($(a[i]).hasClass('selected')){
+                result.push($(a[i]).attr('data-value'));
+            }
+        }
+        global.settings.callback(result)
+    }
+    $.fn.fSelectedValues = function () {
+        var result = [];
+        var $selects = this.parent().find('.fs-dropdown').find('.fs-options').find(".fs-option");
+        for (var i = 0; i < $selects.length; i++) {
+            if($($selects[i]).hasClass('selected')){
+                result.push($($selects[i]).attr('data-value'));
+            }
+        }
+        return result;
+    }
+    $.fn.fSelectedTexts = function (splitString) {
+        var result = "";
+        var $selects = this.find("option:selected");
+        for (var i = 0; i < $selects.length; i++) {
+            result += $selects[i].text + ((i == $selects.length - 1) ? "" : splitString);
+        }
+        return result;
+    }
 
 })(jQuery);

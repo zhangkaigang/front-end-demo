@@ -54,7 +54,7 @@
 }
 
 .fs-search input {
-    width: 100%;
+    width: 80%;
     padding: 2px 4px;
     border: 0;
 }
@@ -121,4 +121,33 @@
 
 .hidden {
     display: none;
+}
+
+
+.fs-selectAll {
+    margin-left:2%;
+    cursor: pointer;
+    height: auto;
+    color: #1890ff;
+    font-size: 14px;
+}
+.clear {
+    margin-left:2%;
+    cursor: pointer;
+    height: auto;
+    color: #1890ff;
+    font-size: 14px;
+
+}
+
+.fs-selectAll.selected {
+    cursor: pointer;
+    height: auto;
+    /* color: green */
+    color: #1890ff;
+    font-size: 14px;
+}
+
+.fs-selectAll:hover {
+    background-color: #eee
 }
