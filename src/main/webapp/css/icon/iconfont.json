@@ -1,0 +1,184 @@
+{
+  "id": "1782085",
+  "name": "律通平台",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "995974",
+      "name": "共享",
+      "font_class": "share-1",
+      "unicode": "e664",
+      "unicode_decimal": 58980
+    },
+    {
+      "icon_id": "13332471",
+      "name": "共享",
+      "font_class": "share",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "10506203",
+      "name": "关闭文件夹",
+      "font_class": "color-folder-open",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "6714381",
+      "name": "文件夹（打开）",
+      "font_class": "folder-open",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
+      "icon_id": "2295978",
+      "name": "zip",
+      "font_class": "zip",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "7684628",
+      "name": "exe",
+      "font_class": "exe",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "13412232",
+      "name": "文件类型 - excel",
+      "font_class": "excel",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "13412233",
+      "name": "文件类型 - ppt",
+      "font_class": "ppt",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "13412234",
+      "name": "文件类型 - word",
+      "font_class": "word",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "13412238",
+      "name": "文件类型 - 未识别文件占位图",
+      "font_class": "other",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "13412240",
+      "name": "文件类型 - 网页",
+      "font_class": "html",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "13412243",
+      "name": "文件类型 - 文本文档",
+      "font_class": "txt",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "13412250",
+      "name": "文件类型 - 图片文件",
+      "font_class": "img",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "13412731",
+      "name": "文件类型 - PDF",
+      "font_class": "pdf",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "6299338",
+      "name": "列表",
+      "font_class": "list",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "11810480",
+      "name": "卡片",
+      "font_class": "card",
+      "unicode": "e684",
+      "unicode_decimal": 59012
+    },
+    {
+      "icon_id": "608563",
+      "name": "搜索",
+      "font_class": "search",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "13410116",
+      "name": "云盘 - 重命名",
+      "font_class": "rename",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "826146",
+      "name": "删除",
+      "font_class": "delete",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "2815737",
+      "name": "移动",
+      "font_class": "folder-move",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "12323778",
+      "name": "新建文件夹",
+      "font_class": "folder-add",
+      "unicode": "e656",
+      "unicode_decimal": 58966
+    },
+    {
+      "icon_id": "2243903",
+      "name": "上传",
+      "font_class": "upload",
+      "unicode": "e672",
+      "unicode_decimal": 58994
+    },
+    {
+      "icon_id": "1001075",
+      "name": "更多",
+      "font_class": "more",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "4685706",
+      "name": "下载",
+      "font_class": "download",
+      "unicode": "e688",
+      "unicode_decimal": 59016
+    },
+    {
+      "icon_id": "11448884",
+      "name": "文件夹",
+      "font_class": "folder",
+      "unicode": "e80c",
+      "unicode_decimal": 59404
+    }
+  ]
+}

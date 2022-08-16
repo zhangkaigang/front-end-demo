@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jquery-zTree</title>
+    <link rel="stylesheet" type="text/css" href="../../css/icon/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../js/zTree/zTreeCustom.css" />
+    <script type="text/javascript" src="../../js/common/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="../../js/zTree/jquery.ztree.all-3.5.js"></script>
+    <script type="text/javascript" src="../../css/icon/iconfont.js"></script>
+</head>
+<body>
+<div>
+    <ul id="folderTree" class="ztree tree" style="height: 320px;overflow-y: auto;"></ul>
+</div>
+
+<script type="text/javascript">
+    var treeData = [
+        {
+            "id":1,
+            "pId":0,
+            "title":"父节点-1",
+            "name":"父节点-1"
+        },
+        {
+            "id":10,
+            "pId":1,
+            "title":"父节点-11",
+            "name":"父节点-11"
+        },
+        {
+            "id":2,
+            "pId":1,
+            "title":"叶子节点-1",
+            "name":"叶子节点-1"
+        },
+        {
+            "id":3,
+            "pId":1,
+            "title":"叶子节点-2",
+            "name":"叶子节点-2"
+        },
+        {
+            "id":100,
+            "pId":10,
+            "title":"叶子节点-12",
+            "name":"叶子节点-12"
+        }
+    ];
+    var folderTree = {
+        treeId : 'folderTree',
+        setting : {
+            view: {
+                showLine: false,
+                fontCss: {'font-size' : '13px'}
+            },
+            data: {
+                key : {
+                    title : "title", //鼠标悬停显示的信息
+                    name : "name" //网页上显示出节点的名称
+                },
+                simpleData: {
+                    enable: true,
+                    idKey: "id", //修改默认的ID为自己的ID
+                    pIdKey: "pId",//修改默认父级ID为自己数据的父级ID
+                    rootPId: "0"     //根节点的ID
+                }
+            },
+            callback : {
+                onClick: zTreeOnClick
+            },
+            usericon:{
+                // 折叠icon
+                OPEN: "open iconfont iconfolder icon-folder", // 打开文件图标
+                CLOSE: "close iconfont iconfolder icon-folder",   // 折叠文件图标
+                OPENDK:'open icon-folder ace-icon tree-minus',  // 打开状态图标
+                CLOSEZD:'close icon-folder ace-icon tree-plus', // 折叠状态图标
+                DOCU: "docu",
+                // 子节点图标
+                CHILDRENNODE: "iconfont iconfolder icon-folder"
+            }
+        }
+    };
+
+    // 点击节点回调
+    function zTreeOnClick(event, treeId, treeNode) {
+        var treeObj = $.fn.zTree.getZTreeObj(folderTree.treeId);
+        treeObj.expandNode(treeNode);
+    }
+
+    $(function(){
+        // 初始化树
+        $.fn.zTree.init($("#" + folderTree.treeId), folderTree.setting, treeData);
+    })
+</script>
+</body>
+</html>
